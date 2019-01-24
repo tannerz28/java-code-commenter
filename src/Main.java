@@ -38,7 +38,7 @@ public class Main {
 	private static void initializeComments(ArrayList<Comment> comments, @NotNull final List<String> lines) {
 		for (int i = 0; i < lines.size(); i++) {
 			for(CommentLambda lambda : getCommentLambdas()) {
-				Comment comment = lambda.run(lines.get(i), i);
+				Comment comment = lambda.run(lines.get(i), i, lines);
 				if(comment != null) {
 					comments.add(comment);
 				}
@@ -86,26 +86,38 @@ public class Main {
 	@Contract(value = " -> new", pure = true)
 	private static CommentLambda[] getCommentLambdas() {
 		return new CommentLambda[] {
-			(line, i) -> {
+			/*
+			* Comment the Main/Driver class
+			* */
+			(line, i, lines) -> {
 				if (line.contains("class ") && (line.contains("Main") || line.contains("Driver"))) {
-					return new Comment("The driver class.", i);
+					return new Comment("The driver class", i);
 				} else {return null;}
 			}
-			, (line, i) -> {
+			/*
+			* Comment subclasses
+			* */
+			, (line, i, lines) -> {
 				 if (line.contains("class ") && line.contains("extends ")) {
 					String dirtyParentClass = line.substring(line.indexOf("extends ")).replace("extends ", "");
 					String parentClass = dirtyParentClass.substring(0, dirtyParentClass.indexOf(" "));
 					return new Comment("Subclass of " + parentClass, i); 
 				} else {return null;}
 			}
-			, (line, i) -> {
+			/*
+			* Comment classes that are neither subclasses nor the Main class
+			* */
+			, (line, i, lines) -> {
 				if(line.contains("class ") && !line.contains("extends ") && !line.contains("Main") && !line.contains("Driver")) {
 					return new Comment("Parent class", i);
 				} else {return null;}
 			}
-			, (line, i) -> {
+			/*
+			* Comment the main method
+			* */
+			, (line, i, lines) -> {
 				if (line.contains("static void main")) {
-					return new Comment("The program's main method.", i);
+					return new Comment("The program's main method", i);
 				} else {return null;}
 			}
 		};
