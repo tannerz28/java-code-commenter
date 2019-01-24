@@ -14,26 +14,17 @@ public class Main {
 	public static void main(String[] args) {
 		Path path = getPathFromUser();
 
-		ArrayList<File> files = getFilesInDirectory(new File(path.toString()));
+		File fileOrDirectory = new File(path.toString());
+
+		if (!fileOrDirectory.isDirectory()) {
+			commentFile(fileOrDirectory);
+			return;
+		}
+
+		ArrayList<File> files = getFilesInDirectory(fileOrDirectory);
 
 		for (File file : files) {
-			if (file.getName().contains("-commented") || !file.getName().endsWith(".java")) {
-				continue;
-			}
-
-			List<String> lines;
-			ArrayList<Comment> comments = new ArrayList<>();
-
-			try {
-				lines = Files.readAllLines(file.toPath());
-
-				initializeComments(comments, lines);
-
-				writeNewFile(file.getAbsolutePath(), lines, comments);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			commentFile(file);
 		}
 	}
 
@@ -51,6 +42,25 @@ public class Main {
 		return files;
 	}
 
+	private static void commentFile(File file) {
+		if (file.getName().contains("-commented") || !file.getName().endsWith(".java")) {
+			return;
+		}
+
+		List<String> lines;
+		ArrayList<Comment> comments = new ArrayList<>();
+
+		try {
+			lines = Files.readAllLines(file.toPath());
+
+			initializeComments(comments, lines);
+
+			writeNewFile(file.getAbsolutePath(), lines, comments);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	private static Path getPathFromUser() {
 		Scanner scanner = new Scanner(System.in);
