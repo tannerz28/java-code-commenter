@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/java-code-commenter-temp.iml" filepath="$PROJECT_DIR$/java-code-commenter-temp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-code-commenter.iml" filepath="$PROJECT_DIR$/java-code-commenter.iml" />
     </modules>
   </component>
 </project>
