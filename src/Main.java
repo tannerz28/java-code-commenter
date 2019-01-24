@@ -1,6 +1,7 @@
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,24 +13,48 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Path path = getPathFromUser();
-		List<String> lines;
-		ArrayList<Comment> comments = new ArrayList<>();
-		
-		try {
-			lines = Files.readAllLines(path);
-			
-			initializeComments(comments, lines);
-			
-			writeNewFile(path.toString(), lines, comments);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		ArrayList<File> files = getFilesInDirectory(new File(path.toString()));
+
+		for (File file : files) {
+			if (file.getName().contains("-commented")) {
+				continue;
+			}
+
+			List<String> lines;
+			ArrayList<Comment> comments = new ArrayList<>();
+
+			try {
+				lines = Files.readAllLines(file.toPath());
+
+				initializeComments(comments, lines);
+
+				writeNewFile(file.getAbsolutePath(), lines, comments);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
+
+	private static ArrayList<File> getFilesInDirectory(File folder) {
+		ArrayList<File> files = new ArrayList<>();
+
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				files.addAll(getFilesInDirectory(fileEntry));
+			} else {
+				files.add(fileEntry);
+			}
+		}
+
+		return files;
+	}
+
 	
 	private static Path getPathFromUser() {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter the full file path: ");
+		System.out.println("Enter the absolute path of the file or directory containing the .java files: ");
 		String path = scanner.next();
 		scanner.close();
 		return Paths.get(path);
@@ -104,11 +129,11 @@ public class Main {
 			* Comment subclasses
 			* */
 			, (line, i, lines, nullClassName, nullSuperClassName) -> {
-				 if (line.contains("class ") && line.contains("extends ")) {
+				if (line.contains("class ") && line.contains("extends ")) {
 					String dirtyParentClass = line.substring(line.indexOf("extends ")).replace("extends ", "");
 					String parentClass = dirtyParentClass.substring(0, dirtyParentClass.indexOf(" "));
-					 String dirtyClass = line.substring(line.indexOf("class ")).replace("class ", "");
-					 String className = dirtyClass.substring(0, dirtyClass.indexOf(" "));
+				 	String dirtyClass = line.substring(line.indexOf("class ")).replace("class ", "");
+				 	String className = dirtyClass.substring(0, dirtyClass.indexOf(" "));
 					return new Comment("Subclass of " + parentClass, i, className, parentClass);
 				} else {return null;}
 			}
