@@ -36,10 +36,14 @@ public class Main {
 	}
 	
 	private static void initializeComments(ArrayList<Comment> comments, @NotNull final List<String> lines) {
+		String className = null;
+		String superClassName = null;
 		for (int i = 0; i < lines.size(); i++) {
 			for(CommentLambda lambda : getCommentLambdas()) {
-				Comment comment = lambda.run(lines.get(i), i, lines);
+				Comment comment = lambda.run(lines.get(i), i, lines, className, superClassName);
 				if(comment != null) {
+					className = comment.className;
+					superClassName = comment.superClassName;
 					comments.add(comment);
 				}
 			}
@@ -89,35 +93,51 @@ public class Main {
 			/*
 			* Comment the Main/Driver class
 			* */
-			(line, i, lines) -> {
+			(line, i, lines, nullClassName, nullSuperClassName) -> {
 				if (line.contains("class ") && (line.contains("Main") || line.contains("Driver"))) {
-					return new Comment("The driver class", i);
+					String dirtyClass = line.substring(line.indexOf("class ")).replace("class ", "");
+					String className = dirtyClass.substring(0, dirtyClass.indexOf(" "));
+					return new Comment("The driver class", i, className, null);
 				} else {return null;}
 			}
 			/*
 			* Comment subclasses
 			* */
-			, (line, i, lines) -> {
+			, (line, i, lines, nullClassName, nullSuperClassName) -> {
 				 if (line.contains("class ") && line.contains("extends ")) {
 					String dirtyParentClass = line.substring(line.indexOf("extends ")).replace("extends ", "");
 					String parentClass = dirtyParentClass.substring(0, dirtyParentClass.indexOf(" "));
-					return new Comment("Subclass of " + parentClass, i); 
+					 String dirtyClass = line.substring(line.indexOf("class ")).replace("class ", "");
+					 String className = dirtyClass.substring(0, dirtyClass.indexOf(" "));
+					return new Comment("Subclass of " + parentClass, i, className, parentClass);
 				} else {return null;}
 			}
 			/*
 			* Comment classes that are neither subclasses nor the Main class
 			* */
-			, (line, i, lines) -> {
+			, (line, i, lines, nullClassName, nullSuperClassName) -> {
 				if(line.contains("class ") && !line.contains("extends ") && !line.contains("Main") && !line.contains("Driver")) {
-					return new Comment("Parent class", i);
+					String dirtyClass = line.substring(line.indexOf("class ")).replace("class ", "");
+					String className = dirtyClass.substring(0, dirtyClass.indexOf(" "));
+					return new Comment("Parent class", i, className, null);
 				} else {return null;}
 			}
 			/*
 			* Comment the main method
 			* */
-			, (line, i, lines) -> {
+			, (line, i, lines, className, superClassName) -> {
 				if (line.contains("static void main")) {
-					return new Comment("The program's main method", i);
+					return new Comment("The program's main method", i, className, superClassName);
+				} else {
+					return null;
+				}
+			}
+			/*
+			* Comment the constructor
+			* */
+			, (line, i, lines, className, superClassName) -> {
+				if(line.contains("public " + className +"(")) {
+					return new Comment("Constructor of the " + className + " class, creates an instance of the class", i, className, superClassName);
 				} else {return null;}
 			}
 		};

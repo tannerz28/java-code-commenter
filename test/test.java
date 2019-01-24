@@ -5,6 +5,9 @@ public class Main {
 }
 
 public class Animal {
+    public Animal() {
+
+    }
     public void move() {
         System.out.println("The animal moved.");
     }
@@ -12,6 +15,9 @@ public class Animal {
 }
 
 public class Dog extends Animal {
+    public Dog() {
+        super();
+    }
     public void move() {
         System.out.println("The dog walked.");
     }

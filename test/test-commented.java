@@ -1,6 +1,6 @@
-// The driver class.
+// The driver class
 public class Main {
-    // The program's main method.
+    // The program's main method
     public static void main(String[] args) {
         System.out.println("Hello World!");
     }
@@ -8,6 +8,10 @@ public class Main {
 
 // Parent class
 public class Animal {
+    // Constructor of the Animal class, creates an instance of the class
+    public Animal() {
+
+    }
     public void move() {
         System.out.println("The animal moved.");
     }
@@ -16,6 +20,10 @@ public class Animal {
 
 // Subclass of Animal
 public class Dog extends Animal {
+    // Constructor of the Dog class, creates an instance of the class
+    public Dog() {
+        super();
+    }
     public void move() {
         System.out.println("The dog walked.");
     }
