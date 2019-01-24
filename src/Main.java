@@ -17,7 +17,7 @@ public class Main {
 		ArrayList<File> files = getFilesInDirectory(new File(path.toString()));
 
 		for (File file : files) {
-			if (file.getName().contains("-commented")) {
+			if (file.getName().contains("-commented") || !file.getName().endsWith(".java")) {
 				continue;
 			}
 
