@@ -140,6 +140,14 @@ public class Main {
 					return new Comment("Constructor of the " + className + " class, creates an instance of the class", i, className, superClassName);
 				} else {return null;}
 			}
+			/*
+			* Comment super call in constructor
+			* */
+			, (line, i, lines, className, superClassName) -> {
+				if (line.contains("super(")) {
+					return new Comment("Calls the constructor of the parent " + superClassName + " class", i, className, superClassName);
+				} else {return null;}
+			}
 		};
 	}
 }

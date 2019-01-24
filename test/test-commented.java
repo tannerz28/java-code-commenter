@@ -22,6 +22,7 @@ public class Animal {
 public class Dog extends Animal {
     // Constructor of the Dog class, creates an instance of the class
     public Dog() {
+        // Calls the constructor of the parent Animal class
         super();
     }
     public void move() {
