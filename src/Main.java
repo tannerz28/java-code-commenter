@@ -87,6 +87,11 @@ public class Main {
 	private static CommentLambda[] getCommentLambdas() {
 		return new CommentLambda[] {
 			(line, i) -> {
+				if (line.contains("class ") && (line.contains("Main") || line.contains("Driver"))) {
+					return new Comment("The driver class.", i);
+				} else {return null;}
+			}
+			, (line, i) -> {
 				 if (line.contains("class ") && line.contains("extends ")) {
 					String dirtyParentClass = line.substring(line.indexOf("extends ")).replace("extends ", "");
 					String parentClass = dirtyParentClass.substring(0, dirtyParentClass.indexOf(" "));
@@ -94,12 +99,12 @@ public class Main {
 				} else {return null;}
 			}
 			, (line, i) -> {
-				if(line.contains("class ") && !line.contains("extends ")) {
+				if(line.contains("class ") && !line.contains("extends ") && !line.contains("Main") && !line.contains("Driver")) {
 					return new Comment("Parent class", i);
 				} else {return null;}
 			}
 			, (line, i) -> {
-				if (line.contains("static void main(String[]")) {
+				if (line.contains("static void main")) {
 					return new Comment("The program's main method.", i);
 				} else {return null;}
 			}

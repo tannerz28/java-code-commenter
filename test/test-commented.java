@@ -1,4 +1,4 @@
-// Parent class
+// The driver class.
 public class Main {
     // The program's main method.
     public static void main(String[] args) {
