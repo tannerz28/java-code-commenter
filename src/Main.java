@@ -1,3 +1,6 @@
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +35,7 @@ public class Main {
 		return Paths.get(path);
 	}
 	
-	private static void initializeComments(ArrayList<Comment> comments, final List<String> lines) {
+	private static void initializeComments(ArrayList<Comment> comments, @NotNull final List<String> lines) {
 		for (int i = 0; i < lines.size(); i++) {
 			for(CommentLambda lambda : getCommentLambdas()) {
 				Comment comment = lambda.run(lines.get(i), i);
@@ -45,15 +48,33 @@ public class Main {
 	
 	private static void writeNewFile(String path, List<String> lines, ArrayList<Comment> comments) {
 		try {
-			FileWriter writer = new FileWriter(path.toString().replace(".java", "-commented.java")); 
+			FileWriter writer = new FileWriter(path.replace(".java", "-commented.java"));
 			for (int i = 0; i < lines.size(); i++) {
-				for(Comment c : comments) {
-					if (c.index == i) {
-						writer.write("// " + c.value + "\r\n");	
+				String line = lines.get(i);
+				for(Comment comment : comments) {
+					if (comment.index == i) {
+						int numberOfSpaces = 0;
+						while(true) {
+							for (char c : line.toCharArray()) {
+								if (c == ' ') {
+									numberOfSpaces++;
+								} else {
+									break;
+								}
+							}
+							break;
+						}
+						String commentString = "";
+						for (int t = 0; t < numberOfSpaces; t++) {
+							commentString += ' ';
+						}
+
+						commentString += "// " + comment.value + "\r\n";
+
+						writer.write(commentString);
 					}
 				}
-		        String newLine =  lines.get(i);
-		        writer.write(newLine + "\r\n");
+		        writer.write(line + "\r\n");
 			}
 			writer.close();
 	    } catch (Exception e) {
@@ -61,6 +82,8 @@ public class Main {
 	    }
 	}  
 	
+	@NotNull
+	@Contract(value = " -> new", pure = true)
 	private static CommentLambda[] getCommentLambdas() {
 		return new CommentLambda[] {
 			(line, i) -> {
