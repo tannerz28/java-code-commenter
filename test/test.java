@@ -5,9 +5,16 @@ public class Main {
 }
 
 public class Animal {
-    public Animal() {
+    private int legs;
 
+    public Animal() {
+        this.legs = 4;
     }
+
+    private getLegs () {
+        return legs;
+    }
+
     public void move() {
         System.out.println("The animal moved.");
     }

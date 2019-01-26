@@ -28,7 +28,7 @@ public class Main {
 		}
 	}
 
-	private static ArrayList<File> getFilesInDirectory(File folder) {
+	private static ArrayList<File> getFilesInDirectory(@NotNull File folder) {
 		ArrayList<File> files = new ArrayList<>();
 
 		for (final File fileEntry : folder.listFiles()) {
@@ -42,7 +42,7 @@ public class Main {
 		return files;
 	}
 
-	private static void commentFile(File file) {
+	private static void commentFile(@NotNull File file) {
 		if (file.getName().contains("-commented") || !file.getName().endsWith(".java")) {
 			return;
 		}
@@ -65,7 +65,7 @@ public class Main {
 	private static Path getPathFromUser() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter the absolute path of the file or directory containing the .java files: ");
-		String path = scanner.next();
+		String path = scanner.nextLine();
 		scanner.close();
 		return Paths.get(path);
 	}

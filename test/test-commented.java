@@ -8,10 +8,17 @@ public class Main {
 
 // Parent class
 public class Animal {
+    private int legs;
+
     // Constructor of the Animal class, creates an instance of the class
     public Animal() {
-
+        this.legs = 4;
     }
+
+    private getLegs () {
+        return legs;
+    }
+
     public void move() {
         System.out.println("The animal moved.");
     }
